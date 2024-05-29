@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>News Feed</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        .article {
+            border: 1px solid white;
+            margin: 20px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .article img {
+            width: 10%; /* Reduce the width to make the image smaller */
+            height: auto; /* Maintain the aspect ratio */
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+<div id="news"></div>
+
+<script>
+    var source = new EventSource('/news-emitter');
+
+    source.onmessage = function(event) {
+        var articles = JSON.parse(event.data);
+        var newsDiv = document.getElementById('news');
+
+        articles.forEach(function(article) {
+            var articleDiv = document.createElement('div');
+            articleDiv.className = 'article';
+
+            var author = document.createElement('p');
+            author.textContent = 'Author: ' + article.author;
+            articleDiv.appendChild(author);
+
+            var title = document.createElement('h2');
+            title.textContent = article.title;
+            articleDiv.appendChild(title);
+
+            var description = document.createElement('p');
+            description.textContent = article.description;
+            articleDiv.appendChild(description);
+
+            var image = document.createElement('img');
+            image.src = article.urlToImage;
+            articleDiv.appendChild(image);
+
+            // Insert the new article at the beginning of the news div
+            newsDiv.insertBefore(articleDiv, newsDiv.firstChild);
+        });
+    };
+</script>
+</body>
+</html>
